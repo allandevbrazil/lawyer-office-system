@@ -2,6 +2,7 @@ services:
   - type: web
     name: lawyer-office-system
     runtime: python
+    plan: free
     rootDir: backend
     buildCommand: pip install .
     preDeployCommand: alembic upgrade head
