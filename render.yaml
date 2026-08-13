@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: lawfirm-api
+    name: lawyer-office-system
     runtime: python
     rootDir: backend
     buildCommand: pip install .
