@@ -1,4 +1,5 @@
 from functools import lru_cache
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -58,10 +59,15 @@ class Settings(BaseSettings):
             target = "NEON_DATABASE_URL" if is_production else "LOCAL_DATABASE_URL"
             raise RuntimeError(f"{target} não está configurada para APP_ENV={self.app_env}.")
         if configured_url.startswith("postgres://") or configured_url.startswith("postgresql://"):
-            return configured_url.replace("postgres://", "postgresql+asyncpg://", 1).replace(
+            configured_url = configured_url.replace("postgres://", "postgresql+asyncpg://", 1).replace(
                 "postgresql://", "postgresql+asyncpg://", 1
             )
-        return configured_url
+        parsed = urlsplit(configured_url)
+        query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+        ssl_mode = query.pop("sslmode", None)
+        if ssl_mode:
+            query["ssl"] = "true" if ssl_mode in {"require", "verify-ca", "verify-full"} else "false"
+        return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), parsed.fragment))
 
 
 @lru_cache
