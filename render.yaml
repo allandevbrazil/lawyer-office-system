@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: lawfirm-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install .
+    preDeployCommand: alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /ready
+    autoDeploy: false
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: NEON_DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: INITIAL_MASTER_EMAIL
+        sync: false
+      - key: INITIAL_MASTER_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: FRONTEND_BASE_URL
+        sync: false
+      - key: INITIAL_EMPLOYEE_EMAIL
+        sync: false
+      - key: INITIAL_EMPLOYEE_PASSWORD
+        sync: false
+      - key: INITIAL_CLIENT_EMAIL
+        sync: false
+      - key: INITIAL_CLIENT_PASSWORD
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

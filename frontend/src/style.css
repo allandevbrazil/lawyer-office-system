@@ -1,0 +1,289 @@
+/* 
+  Base styles for LawFirm ERP
+  The main design system is configured via Tailwind in index.html
+  This file only contains minimal base resets and global styles
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background: #fcf9f2;
+  color: #1c1c18;
+  font-family: Manrope, sans-serif;
+}
+
+.auth-shell.auth-split {
+  display: flex;
+  padding: 0;
+  align-items: stretch;
+}
+.auth-brand-panel {
+  display: none;
+}
+.auth-panel {
+  width: min(440px, 100%);
+  padding: 36px;
+  background: #fff;
+  border: 1px solid #c4c6cb;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(18, 28, 38, 0.05);
+  position: relative;
+}
+.auth-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: #7b5647;
+  border-radius: 8px 8px 0 0;
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.auth-brand-mark {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #121c26;
+  color: #fff;
+}
+.auth-panel h1 {
+  margin: 0 0 8px;
+  color: #000;
+  font:
+    700 38px/1.2 "Libre Caslon Text",
+    Georgia,
+    serif;
+  text-align: center;
+}
+.auth-panel h2 {
+  margin: 0 0 8px;
+  color: #000;
+  font:
+    600 28px/1.3 "Libre Caslon Text",
+    Georgia,
+    serif;
+}
+.auth-subtitle {
+  margin: 0 0 28px;
+  color: #44474b;
+  text-align: center;
+  line-height: 1.5;
+}
+.auth-form {
+  display: grid;
+  gap: 20px;
+}
+.auth-form label {
+  display: grid;
+  gap: 7px;
+  color: #44474b;
+  font:
+    600 12px "Work Sans",
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.auth-form input {
+  width: 100%;
+  padding: 12px 4px;
+  border: 0;
+  border-bottom: 1px solid #c4c6cb;
+  background: transparent;
+  color: #1c1c18;
+  outline: 0;
+  font:
+    16px Manrope,
+    sans-serif;
+}
+.auth-form input:focus {
+  border-color: #7b5647;
+  box-shadow: 0 1px 0 #7b5647;
+}
+.auth-submit {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 16px;
+  border: 0;
+  border-radius: 5px;
+  background: #7b5647;
+  color: #fff;
+  cursor: pointer;
+  font:
+    600 14px "Work Sans",
+    sans-serif;
+}
+.auth-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+.auth-links a,
+.auth-helper a {
+  color: #7b5647;
+  text-decoration: none;
+}
+.auth-links a:hover,
+.auth-helper a:hover {
+  text-decoration: underline;
+}
+.auth-helper {
+  margin: 20px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #e5e2db;
+  color: #44474b;
+  text-align: center;
+  font-size: 13px;
+}
+.auth-message {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 14px;
+}
+.auth-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 4px;
+  background: #ffdad6;
+  color: #93000a;
+  font-size: 14px;
+}
+.auth-password-wrap {
+  position: relative;
+}
+.auth-password-wrap input {
+  padding-right: 42px;
+}
+.auth-password-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  border: 0;
+  background: transparent;
+  color: #75777c;
+  cursor: pointer;
+}
+.auth-check {
+  display: flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: flex-start;
+  gap: 8px !important;
+  font:
+    400 13px Manrope,
+    sans-serif !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+.auth-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: #7b5647;
+}
+@media (min-width: 768px) {
+  .auth-brand-panel {
+    display: flex;
+    width: 42%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 64px;
+    background: #121c26;
+    color: #fff;
+    text-align: center;
+  }
+  .auth-brand-panel h2 {
+    color: #fff;
+    font-size: 52px;
+  }
+  .auth-brand-panel p {
+    color: #bdc7d5;
+    line-height: 1.6;
+  }
+  .auth-split .auth-panel-wrap {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: 48px;
+  }
+  .auth-split .auth-panel {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+/* Ensure the app fills the screen */
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Material Symbols icon font */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions */
+* {
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1eee7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4c6cb;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #75777c;
+}
