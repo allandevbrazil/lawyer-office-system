@@ -65,6 +65,7 @@ class Settings(BaseSettings):
         parsed = urlsplit(configured_url)
         query = dict(parse_qsl(parsed.query, keep_blank_values=True))
         ssl_mode = query.pop("sslmode", None)
+        query.pop("channel_binding", None)
         if ssl_mode:
             query["ssl"] = "true" if ssl_mode in {"require", "verify-ca", "verify-full"} else "false"
         return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, urlencode(query), parsed.fragment))
