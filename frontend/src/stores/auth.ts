@@ -28,9 +28,14 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       user.value = await authApi.me(accessToken.value);
     } catch {
-      const response = await authApi.refresh();
-      persistToken(response.access_token);
-      user.value = response.user;
+      try {
+        const response = await authApi.refresh();
+        persistToken(response.access_token);
+        user.value = response.user;
+      } catch {
+        persistToken(null);
+        user.value = null;
+      }
     }
   }
 

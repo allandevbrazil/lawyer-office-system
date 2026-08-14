@@ -7,6 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_env: str = Field(default="development", alias="APP_ENV")
+    demo_mode: bool = Field(default=False, alias="DEMO_MODE")
+    demo_reset_interval_days: int = Field(default=3, alias="DEMO_RESET_INTERVAL_DAYS")
     database_url: str | None = Field(default=None, alias="DATABASE_URL")
     local_database_url: str | None = Field(
         default="postgresql+asyncpg://lawfirm:change-me@localhost:5433/lawfirm",

@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import Settings
-from app.models import Client, Document, User, UserRole
+from app.models import Case, Client, Document, User, UserRole
 from app.services.storage_service import LocalStorage
 
 
@@ -43,6 +43,23 @@ class DocumentService:
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid visibility"
             )
+        client = None
+        if client_id:
+            client = await self.session.scalar(
+                select(Client).where(
+                    Client.id == client_id, Client.firm_id == current_user.firm_id
+                )
+            )
+            if not client:
+                raise HTTPException(status_code=404, detail="Client not found")
+        if case_id:
+            case = await self.session.scalar(
+                select(Case).where(Case.id == case_id, Case.firm_id == current_user.firm_id)
+            )
+            if not case:
+                raise HTTPException(status_code=404, detail="Case not found")
+            if client_id and case.client_id != client_id:
+                raise HTTPException(status_code=422, detail="Case does not belong to client")
         document = Document(
             firm_id=current_user.firm_id,
             client_id=client_id,

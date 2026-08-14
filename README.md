@@ -88,9 +88,9 @@ token em 3 dias. Esses valores podem ser sobrescritos pelas variáveis
 
 Contas demo locais criadas pelo seed:
 
-- MASTER: `master@example.com` / valor de `INITIAL_MASTER_PASSWORD`
-- FUNCIONARIO: `ana.silva@example.com` / `Demo@123456`
-- CLIENTE: `mariana.costa@example.com` / `Client@123456`
+- MASTER: `master@example.com` / `DemoMaster@2026!`
+- FUNCIONARIO: `ana.silva@example.com` / `DemoStaff@2026!`
+- CLIENTE: `mariana.costa@example.com` / `DemoClient@2026!`
 
 O usuário CLIENTE está vinculado à cliente Mariana Costa e consegue visualizar os processos e
 faturas associados a ela. Essas credenciais são somente para desenvolvimento/demo.
@@ -118,7 +118,7 @@ npm run preview
 # Acessar: http://localhost:5173 (dev) ou http://localhost:4173 (preview)
 ```
 
-O frontend exige `VITE_API_BASE_URL` e identifica o bundle por `VITE_APP_ENV`. Em producao,
+O frontend exige `VITE_LAWFIRM_API_URL` e identifica o bundle por `VITE_APP_ENV`. Em producao,
 configure `VITE_APP_ENV=production` e a URL publica do servico Render:
 `https://lawyer-office-system.onrender.com/api/v1`. Variaveis `VITE_*` sao publicas no bundle e nao
 devem conter segredos.
@@ -131,7 +131,7 @@ No Render, configure `FRONTEND_BASE_URL` e `CORS_ORIGINS` com a URL do frontend 
 
 - **NeonDB:** configure `NEON_DATABASE_URL` com a string PostgreSQL fornecida pelo Neon e SSL habilitado.
 - **Render:** conecte o repositorio, use `render.yaml` e preencha as variaveis marcadas como `sync: false` no painel. O servico executa as migracoes, cria o Master inicial e carrega os dados demo de forma idempotente.
-- **Vercel:** importe o repositorio e use `vercel.json`; configure `VITE_API_BASE_URL` com `https://lawyer-office-system.onrender.com/api/v1`.
+- **Vercel:** importe o repositorio e use `vercel.json`; configure `VITE_LAWFIRM_API_URL` com `https://lawyer-office-system.onrender.com/api/v1`.
 - **Swagger:** apos o deploy, a documentacao fica em `/docs`, `/redoc` e `/openapi.json`, com os links publicos listados acima.
 
 Nunca execute `app.cli.reset_demo` em producao. O comando so funciona com `APP_ENV=demo`.

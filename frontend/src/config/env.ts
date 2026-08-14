@@ -1,9 +1,11 @@
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+const apiBaseUrl = (
+  import.meta.env.VITE_LAWFIRM_API_URL?.trim() || import.meta.env.VITE_API_BASE_URL?.trim()
+);
 const appEnv = import.meta.env.VITE_APP_ENV?.trim() || "development";
 
 if (!apiBaseUrl) {
   throw new Error(
-    "VITE_API_BASE_URL não está configurada. Crie frontend/.env.local a partir de frontend/.env.example.",
+    "VITE_LAWFIRM_API_URL não está configurada. Crie frontend/.env.local a partir de frontend/.env.example.",
   );
 }
 
@@ -17,7 +19,7 @@ try {
     throw new Error("A URL da API deve usar http ou https.");
   }
 } catch {
-  throw new Error(`VITE_API_BASE_URL inválida: ${apiBaseUrl}`);
+  throw new Error(`VITE_LAWFIRM_API_URL inválida: ${apiBaseUrl}`);
 }
 
 export const environment = {

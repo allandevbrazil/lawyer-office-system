@@ -61,8 +61,8 @@ class ClientInvitationResponse(BaseModel):
 class ClientRegistration(BaseModel):
     invite_token: str
     email: EmailStr
-    password: str
-    full_name: str
+    password: str = Field(min_length=12, max_length=128)
+    full_name: str = Field(min_length=2, max_length=160)
     phone: str | None = None
 
 
@@ -72,4 +72,4 @@ class PasswordResetRequest(BaseModel):
 
 class PasswordResetConfirm(BaseModel):
     token: str
-    new_password: str
+    new_password: str = Field(min_length=12, max_length=128)

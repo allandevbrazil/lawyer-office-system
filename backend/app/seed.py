@@ -40,6 +40,10 @@ async def seed_initial_master() -> None:
             select(User).where(User.email == settings.initial_master_email.lower())
         )
         if existing_user:
+            if settings.demo_mode:
+                existing_user.password_hash = hash_password(settings.initial_master_password)
+                existing_user.status = UserStatus.ACTIVE
+                await session.commit()
             return
 
         firm = Firm(name=settings.initial_firm_name)
@@ -241,6 +245,8 @@ async def seed_demo_data() -> None:
 
         if not await session.scalar(select(Activity).where(Activity.firm_id == firm.id, Activity.action == "DEMO_SEED")):
             session.add(Activity(firm_id=firm.id, actor_user_id=master.id, entity_type="SYSTEM", action="DEMO_SEED", description="Dados demonstrativos carregados para o ambiente local.", metadata_json={"version": 1}))
+        if not await session.scalar(select(Activity).where(Activity.firm_id == firm.id, Activity.action == "DEMO_RESET")):
+            session.add(Activity(firm_id=firm.id, actor_user_id=master.id, entity_type="SYSTEM", action="DEMO_RESET", description="Marcador do ciclo de reset do ambiente demonstrativo.", metadata_json={"interval_days": settings.demo_reset_interval_days}))
 
         await session.commit()
 

@@ -88,3 +88,24 @@ async def test_admin_roles_and_wiki_visibility() -> None:
             "/api/v1/wiki/articles", headers={"Authorization": f"Bearer {client_token}"}
         )
         assert wiki.status_code == 403
+        staff = await client.get(
+            "/api/v1/staff", headers={"Authorization": f"Bearer {client_token}"}
+        )
+        assert staff.status_code == 403
+
+        staff_created = await client.post(
+            "/api/v1/staff",
+            headers={"Authorization": f"Bearer {master_token}"},
+            json={
+                "email": f"employee-{uuid.uuid4()}@example.com",
+                "full_name": "Admin Employee",
+                "password": password,
+            },
+        )
+        assert staff_created.status_code == 201
+        role_escalation = await client.patch(
+            f"/api/v1/staff/{staff_created.json()['id']}",
+            headers={"Authorization": f"Bearer {master_token}"},
+            json={"role": "MASTER"},
+        )
+        assert role_escalation.status_code == 422

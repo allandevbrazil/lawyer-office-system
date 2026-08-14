@@ -26,6 +26,7 @@ coverage.xml
 htmlcov/
 playwright-report/
 test-results/
+plansec.md
 
 # IDE
 .vscode/

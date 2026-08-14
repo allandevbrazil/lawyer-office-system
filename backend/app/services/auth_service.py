@@ -1,7 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import Settings
@@ -65,7 +65,9 @@ class AuthService:
 
     async def rotate_refresh_token(self, refresh_token: str) -> tuple[TokenResponse, str]:
         record = await self.session.scalar(
-            select(RefreshToken).where(RefreshToken.token_hash == hash_token(refresh_token))
+            select(RefreshToken)
+            .where(RefreshToken.token_hash == hash_token(refresh_token))
+            .with_for_update()
         )
         now = datetime.now(UTC)
         if not record or record.revoked_at is not None or record.expires_at <= now:
@@ -130,4 +132,9 @@ class AuthService:
             )
         user.password_hash = hash_password(new_password)
         record.used_at = now
+        await self.session.execute(
+            update(RefreshToken)
+            .where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None))
+            .values(revoked_at=now)
+        )
         await self.session.commit()

@@ -370,7 +370,7 @@ Os scripts finais e versoes exatas serao definidos no `/build` conforme dependen
 - **Supabase Storage Free:** bucket privado para documentos, URLs assinadas e limite configuravel; usar `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` apenas no backend. A chave nunca vai para o frontend nem para o repositorio.
 - **Resend Free:** envio de convites e recuperacao de senha por adapter; usar `RESEND_API_KEY` somente no backend e dominio/remetente verificado quando necessario. O adapter de console permanece disponivel para desenvolvimento sem chaves.
 - **Render:** Web Service com build/install de dependencias, comando de migration no deploy e start com Uvicorn/Gunicorn; secrets somente no painel do Render.
-- **Vercel:** build da pasta `frontend`, `VITE_API_BASE_URL` apontando para a API Render e rewrite SPA para `index.html`.
+- **Vercel:** build da pasta `frontend`, `VITE_LAWFIRM_API_URL` apontando para a API Render e rewrite SPA para `index.html`.
 - CORS restrito ao dominio Vercel configurado; health checks em `/health` e `/ready`.
 - Logs estruturados sem PII desnecessaria, `request_id`, metricas de latencia/erro e alertas de readiness.
 

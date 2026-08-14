@@ -7,7 +7,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models import Client, Invoice, InvoiceItem, InvoiceStatus, User, UserRole
+from app.models import Case, Client, Invoice, InvoiceItem, InvoiceStatus, Service, User, UserRole
 from app.schemas.billing import InvoiceCreate, InvoiceStatusUpdate
 
 CENT = Decimal("0.01")
@@ -37,6 +37,27 @@ class BillingService:
         )
         if not client:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
+        if payload.case_id:
+            case = await self.session.scalar(
+                select(Case).where(
+                    Case.id == payload.case_id,
+                    Case.firm_id == current_user.firm_id,
+                    Case.client_id == payload.client_id,
+                )
+            )
+            if not case:
+                raise HTTPException(status_code=404, detail="Case not found for client")
+        for item in payload.items:
+            if item.service_id:
+                service = await self.session.scalar(
+                    select(Service).where(
+                        Service.id == item.service_id,
+                        Service.firm_id == current_user.firm_id,
+                        Service.client_id == payload.client_id,
+                    )
+                )
+                if not service:
+                    raise HTTPException(status_code=404, detail="Service not found for client")
         items = [
             InvoiceItem(
                 description=item.description,

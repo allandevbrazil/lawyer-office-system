@@ -42,7 +42,7 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const auth = useAuthStore();
-  if (!auth.user && auth.accessToken) await auth.restore();
+  if (!auth.user) await auth.restore();
   if (to.meta.public && auth.isAuthenticated) return "/app";
   if (!to.meta.public && !auth.isAuthenticated) return "/login";
   return true;

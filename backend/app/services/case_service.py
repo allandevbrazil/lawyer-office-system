@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Case, CaseEvent, Client, User, UserRole
+from app.models import Case, CaseEvent, Client, User, UserRole, UserStatus
 from app.schemas.case import CaseCreate, CaseEventCreate, CaseUpdate
 
 
@@ -67,7 +67,20 @@ class CaseService:
     ) -> Case:
         case = await self.get_case(case_id, current_user)
         self.require_staff(current_user)
-        for field, value in payload.model_dump(exclude_unset=True).items():
+        values = payload.model_dump(exclude_unset=True)
+        responsible_user_id = values.get("responsible_user_id")
+        if responsible_user_id is not None:
+            responsible_user = await self.session.scalar(
+                select(User).where(
+                    User.id == responsible_user_id,
+                    User.firm_id == current_user.firm_id,
+                    User.role.in_([UserRole.MASTER, UserRole.FUNCIONARIO]),
+                    User.status == UserStatus.ACTIVE,
+                )
+            )
+            if not responsible_user:
+                raise HTTPException(status_code=404, detail="Responsible user not found")
+        for field, value in values.items():
             setattr(case, field, value)
         if case.status == "ARCHIVED" and case.closed_at is None:
             case.closed_at = datetime.now(UTC)

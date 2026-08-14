@@ -20,6 +20,8 @@ async def list_staff(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_db_session),
 ) -> list[UserResponse]:
+    if current_user.role not in {UserRole.MASTER, UserRole.FUNCIONARIO}:
+        raise HTTPException(status_code=403, detail="Staff role required")
     users = list(
         (
             await session.scalars(
@@ -38,6 +40,8 @@ async def list_staff(
 async def create_staff(payload: StaffCreate, current_user: User = Depends(get_current_user), session: AsyncSession = Depends(get_db_session)) -> UserResponse:
     if current_user.role != UserRole.MASTER:
         raise HTTPException(status_code=403, detail="Master role required")
+    if payload.role != UserRole.FUNCIONARIO:
+        raise HTTPException(status_code=422, detail="Only staff users can be created here")
     existing = await session.scalar(select(User).where(User.email == str(payload.email).lower()))
     if existing:
         raise HTTPException(status_code=409, detail="Email already registered")
@@ -56,6 +60,8 @@ async def update_staff(user_id: str, payload: StaffUpdate, current_user: User = 
     if not user:
         raise HTTPException(status_code=404, detail="Staff member not found")
     values = payload.model_dump(exclude_unset=True)
+    if values.get("role") == UserRole.MASTER:
+        raise HTTPException(status_code=422, detail="Master role cannot be assigned here")
     if "password" in values:
         user.password_hash = hash_password(values.pop("password"))
     if "email" in values:

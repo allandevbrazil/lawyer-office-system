@@ -5,12 +5,16 @@ services:
     plan: free
     rootDir: backend
     buildCommand: pip install .
-    startCommand: alembic upgrade head && python -m app.seed && python -m app.cli.seed_demo && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: alembic upgrade head && python -m app.cli.reset_demo_if_due && python -m app.seed && python -m app.cli.seed_demo && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /ready
     autoDeploy: false
     envVars:
       - key: APP_ENV
         value: production
+      - key: DEMO_MODE
+        value: "true"
+      - key: DEMO_RESET_INTERVAL_DAYS
+        value: "3"
       - key: DATABASE_URL
         sync: false
       - key: NEON_DATABASE_URL
