@@ -3,9 +3,18 @@ import axios from "axios";
 import { environment } from "@/config/env";
 import type { TokenResponse } from "@/types/auth";
 
+let transientAccessToken: string | null = null;
+
 const api = axios.create({
   baseURL: environment.apiBaseUrl,
   withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  if (transientAccessToken) {
+    config.headers.Authorization = `Bearer ${transientAccessToken}`;
+  }
+  return config;
 });
 
 api.interceptors.response.use(
@@ -21,17 +30,21 @@ api.interceptors.response.use(
     error.config._retry = true;
     try {
       const { data } = await api.post<TokenResponse>("/auth/refresh");
-      localStorage.setItem("lawfirm.access_token", data.access_token);
+      transientAccessToken = data.access_token;
       error.config.headers.Authorization = `Bearer ${data.access_token}`;
       return api.request(error.config);
     } catch {
-      localStorage.removeItem("lawfirm.access_token");
+      transientAccessToken = null;
       return Promise.reject(error);
     }
   },
 );
 
 export const authApi = {
+  setAccessToken(token: string | null): void {
+    transientAccessToken = token;
+  },
+
   async login(email: string, password: string): Promise<TokenResponse> {
     const body = new URLSearchParams({ username: email, password });
     const { data } = await api.post<TokenResponse>("/auth/token", body, {
@@ -47,6 +60,7 @@ export const authApi = {
 
   async logout(): Promise<void> {
     await api.post("/auth/logout");
+    transientAccessToken = null;
   },
 
   async register(payload: Record<string, string>): Promise<TokenResponse["user"]> {

@@ -4,17 +4,14 @@ import { computed, ref } from "vue";
 import { authApi } from "@/services/api";
 import type { User } from "@/types/auth";
 
-const tokenStorageKey = "lawfirm.access_token";
-
 export const useAuthStore = defineStore("auth", () => {
-  const accessToken = ref<string | null>(localStorage.getItem(tokenStorageKey));
+  const accessToken = ref<string | null>(null);
   const user = ref<User | null>(null);
   const isAuthenticated = computed(() => Boolean(accessToken.value && user.value));
 
   function persistToken(token: string | null): void {
     accessToken.value = token;
-    if (token) localStorage.setItem(tokenStorageKey, token);
-    else localStorage.removeItem(tokenStorageKey);
+    authApi.setAccessToken?.(token);
   }
 
   async function login(email: string, password: string): Promise<void> {
@@ -24,9 +21,14 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   async function restore(): Promise<void> {
-    if (!accessToken.value) return;
     try {
-      user.value = await authApi.me(accessToken.value);
+      if (accessToken.value) {
+        user.value = await authApi.me(accessToken.value);
+        return;
+      }
+      const response = await authApi.refresh();
+      persistToken(response.access_token);
+      user.value = response.user;
     } catch {
       try {
         const response = await authApi.refresh();
