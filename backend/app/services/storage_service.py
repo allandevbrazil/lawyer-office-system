@@ -30,11 +30,34 @@ class LocalStorage:
                 status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                 detail="Unsupported file type",
             )
+            self._validate_content(upload.content_type, content)
         storage_key = f"{firm_id}/{document_id}/{Path(upload.filename or 'file').name}"
         target = self.root / storage_key
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(content)
         return storage_key, len(content), hashlib.sha256(content).hexdigest()
+
+    @staticmethod
+    def _validate_content(content_type: str, content: bytes) -> None:
+        signatures = {
+            "application/pdf": b"%PDF-",
+            "image/jpeg": b"\xff\xd8\xff",
+            "image/png": b"\x89PNG\r\n\x1a\n",
+        }
+        signature = signatures.get(content_type)
+        if signature and not content.startswith(signature):
+            raise HTTPException(
+                status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                detail="File content does not match its type",
+            )
+        if content_type == "text/plain":
+            try:
+                content.decode("utf-8")
+            except UnicodeDecodeError as error:
+                raise HTTPException(
+                    status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+                    detail="Text file is not valid UTF-8",
+                ) from error
 
     def read(self, storage_key: str) -> bytes:
         target = self.root / storage_key
