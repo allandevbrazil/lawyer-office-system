@@ -40,7 +40,7 @@ def set_refresh_cookie(response: Response, token: str, settings: Settings) -> No
         value=token,
         httponly=True,
         secure=settings.app_env == "production",
-        samesite="lax",
+        samesite="none" if settings.app_env == "production" else "lax",
         max_age=settings.refresh_token_expire_days * 86400,
         path="/api/v1/auth",
     )
