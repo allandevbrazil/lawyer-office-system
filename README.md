@@ -2,6 +2,17 @@
 
 Monorepo do ERP de backoffice para escritorios de advocacia.
 
+## Acessos em producao
+
+- **Frontend:** [lawyer-office-system.vercel.app](https://lawyer-office-system.vercel.app)
+- **API Render:** [lawyer-office-system.onrender.com](https://lawyer-office-system.onrender.com)
+- **Swagger UI:** [lawyer-office-system.onrender.com/docs](https://lawyer-office-system.onrender.com/docs)
+- **ReDoc:** [lawyer-office-system.onrender.com/redoc](https://lawyer-office-system.onrender.com/redoc)
+- **OpenAPI JSON:** [lawyer-office-system.onrender.com/openapi.json](https://lawyer-office-system.onrender.com/openapi.json)
+
+O ambiente de producao usa NeonDB e e inicializado com dados demonstrativos idempotentes durante o deploy:
+3 processos, 3 clientes, 1 fatura, 2 documentos, eventos e artigos Wiki.
+
 ## Estrutura
 
 - `backend/`: API FastAPI, SQLAlchemy async e Alembic.
@@ -107,9 +118,9 @@ npm run preview
 # Acessar: http://localhost:5173 (dev) ou http://localhost:4173 (preview)
 ```
 
-O frontend exige `VITE_API_BASE_URL` e identifica o bundle por `VITE_APP_ENV`. Em produção,
-configure `VITE_APP_ENV=production` e a URL pública do serviço Render, por exemplo
-`https://lawfirm-api.onrender.com/api/v1`. Variáveis `VITE_*` são públicas no bundle e não
+O frontend exige `VITE_API_BASE_URL` e identifica o bundle por `VITE_APP_ENV`. Em producao,
+configure `VITE_APP_ENV=production` e a URL publica do servico Render:
+`https://lawyer-office-system.onrender.com/api/v1`. Variaveis `VITE_*` sao publicas no bundle e nao
 devem conter segredos.
 
 No backend, `APP_ENV=development` ou `demo` usa `LOCAL_DATABASE_URL`; `APP_ENV=production` usa
@@ -119,12 +130,16 @@ No Render, configure `FRONTEND_BASE_URL` e `CORS_ORIGINS` com a URL do frontend 
 ## Deploy
 
 - **NeonDB:** configure `NEON_DATABASE_URL` com a string PostgreSQL fornecida pelo Neon e SSL habilitado.
-- **Render:** conecte o repositorio, use `render.yaml` e preencha as variaveis marcadas como `sync: false` no painel.
-- **Vercel:** importe o repositorio e use `vercel.json`; configure `VITE_API_BASE_URL` com a URL publica do Render.
-- **Swagger:** apos o deploy, a documentacao fica em `/docs`, `/redoc` e `/openapi.json`.
+- **Render:** conecte o repositorio, use `render.yaml` e preencha as variaveis marcadas como `sync: false` no painel. O servico executa as migracoes, cria o Master inicial e carrega os dados demo de forma idempotente.
+- **Vercel:** importe o repositorio e use `vercel.json`; configure `VITE_API_BASE_URL` com `https://lawyer-office-system.onrender.com/api/v1`.
+- **Swagger:** apos o deploy, a documentacao fica em `/docs`, `/redoc` e `/openapi.json`, com os links publicos listados acima.
 
 Nunca execute `app.cli.reset_demo` em producao. O comando so funciona com `APP_ENV=demo`.
 
 ## Fluxo de trabalho
 
 A implementacao segue os gates `/spec`, `/plan`, `/build`, `/test`, `/review` e `/ship` descritos em `SPEC.md` e `tasks/plan.md`.
+
+---
+
+**DESENVOLVIDO POR ALLAN SELEGUIM**
