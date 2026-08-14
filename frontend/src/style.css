@@ -1,8 +1,16 @@
-/* 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
   Base styles for LawFirm ERP
   The main design system is configured via Tailwind in index.html
   This file only contains minimal base resets and global styles
 */
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+}
 
 * {
   box-sizing: border-box;

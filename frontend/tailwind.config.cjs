@@ -1,0 +1,58 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./index.html", "./src/**/*.{vue,ts}"],
+  theme: {
+    extend: {
+      colors: {
+        "primary-container": "#121c26",
+        background: "#fcf9f2",
+        "surface-container-lowest": "#ffffff",
+        "surface-container-low": "#f6f3ec",
+        "surface-container-high": "#ebe8e1",
+        "surface-container-highest": "#e5e2db",
+        "surface-variant": "#e5e2db",
+        "on-background": "#1c1c18",
+        "on-surface": "#1c1c18",
+        "on-surface-variant": "#44474b",
+        "on-primary": "#ffffff",
+        "on-secondary": "#ffffff",
+        "on-secondary-container": "#795546",
+        "secondary": "#7b5647",
+        "tertiary-fixed-dim": "#d7c3b0",
+        "on-tertiary-fixed-variant": "#524436",
+        outline: "#75777c",
+        "outline-variant": "#c4c6cb",
+        primary: "#000000",
+        error: "#ba1a1a",
+      },
+      borderRadius: {
+        DEFAULT: "0.125rem",
+        lg: "0.25rem",
+        xl: "0.5rem",
+        full: "0.75rem",
+      },
+      spacing: {
+        "max-width": "1440px",
+        "widget-padding": "24px",
+        unit: "8px",
+        "margin-page": "40px",
+        gutter: "24px",
+      },
+      fontFamily: {
+        "widget-title": ["Work Sans"],
+        "display-lg": ["Libre Caslon Text"],
+        "headline-md": ["Libre Caslon Text"],
+        "body-md": ["Manrope"],
+        "label-caps": ["Work Sans"],
+      },
+      fontSize: {
+        "widget-title": ["14px", { lineHeight: "1.2", fontWeight: "600" }],
+        "display-lg": ["48px", { lineHeight: "1.2", fontWeight: "700" }],
+        "headline-md": ["24px", { lineHeight: "1.3", fontWeight: "600" }],
+        "body-md": ["16px", { lineHeight: "1.5", fontWeight: "400" }],
+        "label-caps": ["12px", { lineHeight: "1.4", letterSpacing: "0.1em", fontWeight: "600" }],
+      },
+    },
+  },
+  plugins: [],
+};
