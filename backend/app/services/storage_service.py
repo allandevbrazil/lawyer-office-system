@@ -30,7 +30,7 @@ class LocalStorage:
                 status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                 detail="Unsupported file type",
             )
-            self._validate_content(upload.content_type, content)
+        self._validate_content(upload.content_type, content)
         storage_key = f"{firm_id}/{document_id}/{Path(upload.filename or 'file').name}"
         target = self.root / storage_key
         target.parent.mkdir(parents=True, exist_ok=True)
