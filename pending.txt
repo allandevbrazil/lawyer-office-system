@@ -1,0 +1,2 @@
+Precisa criar uma automação para abrir e logar essa aplicação uma vez por semana, para que não morram 
+NEON e RENDER que são aplicações que obrigam ter acesso frequente se não deletam banco, api e tal.

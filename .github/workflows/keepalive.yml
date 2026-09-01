@@ -1,0 +1,51 @@
+name: Keep Alive (Neon + Render)
+
+# Mantém a API do Render (lawyer-office-system.onrender.com) e o banco NeonDB
+# acordados: Render free dorme após ~15 min de inatividade e o Neon pausa
+# computes ociosos. Este job "loga" na aplicação semanalmente (e sob demanda)
+# para comprovar que API + banco respondem, evitando que os serviços sejam
+# desligados/limpos por inatividade prolongada.
+
+on:
+  schedule:
+    # Segunda-feira 08:00 BRT (11:00 UTC)
+    - cron: "0 11 * * 1"
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_URL: https://lawyer-office-system.onrender.com
+      DEMO_EMAIL: master@example.com
+      DEMO_PASSWORD: DemoMaster@2026!
+    steps:
+      - name: Wake up API (health check /ready)
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 120 "$BASE_URL/ready")
+          echo "GET /ready -> $code"
+          [ "$code" = "200" ] || { echo "❌ API não respondeu 200 em /ready"; exit 1; }
+
+      - name: Login com credenciais demo (valida API + Neon)
+        id: login
+        run: |
+          token=$(curl -s --max-time 60 -X POST "$BASE_URL/api/v1/auth/login" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "username=$DEMO_EMAIL&password=$DEMO_PASSWORD" \
+            | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
+          if [ -z "$token" ]; then echo "❌ Login falhou (token vazio)"; exit 1; fi
+          echo "✅ Login OK"
+          echo "TOKEN=$token" >> "$GITHUB_ENV"
+
+      - name: Acessar endpoint protegido (comprova que o banco responde)
+        run: |
+          code=$(curl -s -o /tmp/keepalive.json -w "%{http_code}" --max-time 60 \
+            "$BASE_URL/api/v1/dashboard/summary" \
+            -H "Authorization: Bearer $TOKEN")
+          echo "GET /api/v1/dashboard/summary -> $code"
+          if [ "$code" = "200" ]; then
+            echo "✅ Banco Neon respondendo. Resumo: $(head -c 200 /tmp/keepalive.json)"
+          else
+            echo "❌ Endpoint protegido falhou ($code)"; cat /tmp/keepalive.json; exit 1
+          fi
