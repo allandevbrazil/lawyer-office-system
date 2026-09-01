@@ -30,7 +30,7 @@ jobs:
       - name: Login com credenciais demo (valida API + Neon)
         id: login
         run: |
-          token=$(curl -s --max-time 60 -X POST "$BASE_URL/api/v1/auth/login" \
+          token=$(curl -s --max-time 60 -X POST "$BASE_URL/api/v1/auth/token" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "username=$DEMO_EMAIL&password=$DEMO_PASSWORD" \
             | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")

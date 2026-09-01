@@ -19,7 +19,7 @@ if ($ready.StatusCode -ne 200) { throw "API nao respondeu 200 em /ready" }
 
 # 2) Login (OAuth2 form) -> access_token
 $body = @{ username = $EMAIL; password = $PASS }
-$login = Invoke-RestMethod -Uri "$BASE/api/v1/auth/login" -Method Post `
+$login = Invoke-RestMethod -Uri "$BASE/api/v1/auth/token" -Method Post `
   -Body $body -TimeoutSec 60
 $token = $login.access_token
 if (-not $token) { throw "Login falhou (token vazio)" }
